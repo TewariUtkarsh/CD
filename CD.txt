@@ -1,0 +1,1258 @@
+Lexical ALGORITHM: 
+
+Step1: Start the program. 
+
+Step2: Declare all the variables and file pointers. 
+
+Step3: Display the input program. 
+
+Step4: Separate the keyword in the program and display it. 
+
+Step5: Display the header files of the input program. 
+
+Step6: Separate the operators of the input program and display it. 
+
+Step7: Print the punctuation marks. 
+
+Step8: Print the constant that are present in input program. 
+
+Step9: Print the Identifiers of the input program. 
+
+ 
+
+PROGRAM CODE: 
+
+#include <stdbool.h> 
+
+#include <stdio.h> 
+
+#include <string.h> 
+
+#include <stdlib.h> 
+
+ bool isDelimiter(char ch) 
+
+{ 
+
+    if (ch == ' ' || ch == '/' || ch == ',' || ch == ';' ||  
+
+        ch == '>' || ch == '<' || ch == '{' || ch == '}' || 
+
+        ch == '(' || ch == ')' || ch == '=') 
+
+        return (true); 
+
+    return (false); 
+
+} 
+
+ bool isSymbol(char ch) { 
+
+    if (ch == ',' || ch == ';' ||  
+
+        ch == '(' || ch == ')' || 
+
+        ch == '{' || ch == '}') 
+
+        return (true); 
+
+    return (false); 
+
+} 
+
+ bool isOperator(char ch) { 
+
+    if (ch == '+' || ch == '-' || ch == '*' || 
+
+        ch == '/' || ch == '>' || ch == '<' || 
+
+        ch == '=') 
+
+        return (true); 
+
+    return (false); 
+
+} 
+
+ bool isIdentifier(char* str) { 
+
+    if (str[0] == '0' || str[0] == '1' || str[0] == '2' || 
+
+        str[0] == '3' || str[0] == '4' || str[0] == '5' || 
+
+        str[0] == '6' || str[0] == '7' || str[0] == '8' || 
+
+        str[0] == '9' || isDelimiter(str[0]) == true) 
+
+        return (false); 
+
+    return (true); 
+
+} 
+
+ bool isKeyword(char* str) 
+
+{ 
+
+    if (!strcmp(str, "if") || !strcmp(str, "else") || 
+
+        !strcmp(str, "while") || !strcmp(str, "do")  
+
+        || !strcmp(str, "double") || !strcmp(str, "float") 
+
+        || !strcmp(str, "return") || !strcmp(str, "char") 
+
+        || !strcmp(str, "long") || !strcmp(str, "short") || !strcmp(str, "main") 
+
+        || !strcmp(str, "unsigned") || !strcmp(str, "void") || !strcmp(str, "int")) 
+
+        return (true); 
+
+    return (false); 
+
+} 
+
+ bool isInteger(char* str) 
+
+{ 
+
+    int i, len = strlen(str); 
+
+   if (len == 0) 
+
+        return (false); 
+
+    for (i = 0; i < len; i++) { 
+
+        if (str[i] != '0' && str[i] != '1' && str[i] != '2' 
+
+            && str[i] != '3' && str[i] != '4' && str[i] != '5' 
+
+            && str[i] != '6' && str[i] != '7' && str[i] != '8' 
+
+            && str[i] != '9' || (str[i] == '-' && i > 0)) 
+
+            return (false); 
+
+    } 
+
+    return (true); 
+
+} 
+
+char* subString(char* str, int left, int right) 
+
+{ 
+
+    int i; 
+
+    char* subStr = (char*)malloc(sizeof(char) * (right - left + 2)); 
+
+     for (i = left; i <= right; i++) 
+
+        subStr[i - left] = str[i]; 
+
+        subStr[right - left + 1] = '\0'; 
+
+    return (subStr); 
+
+} 
+
+ void getToken(char* str) 
+
+{ 
+
+    int l = 0, r = 0; 
+
+    int len = strlen(str); 
+
+  
+
+    while (r <= len && l <= r) { 
+
+        if (isDelimiter(str[r]) == false) 
+
+            r++; 
+
+         if (isDelimiter(str[r]) == true && l == r) { 
+
+            if (isOperator(str[r]) == true) 
+
+                printf("'%c' is an Operator\n", str[r]); 
+
+            else if (isSymbol(str[r]) == true) 
+
+                printf("'%c' is a Symbol\n", str[r]); 
+
+ 	r++; 
+
+            l = r; 
+
+        } else if (isDelimiter(str[r]) == true && l != r 
+
+                   || (r == len && l != r)) { 
+
+            char* subStr = subString(str, l, r - 1); 
+
+ 	if (isKeyword(subStr) == true) 
+
+                printf("'%s' is a Keyword\n", subStr); 
+
+ 	else if (isInteger(subStr) == true) 
+
+                printf("'%s' is a Constant\n", subStr); 
+
+ 	else if (isIdentifier(subStr) == true 
+
+                     && isDelimiter(str[r - 1]) == false) 
+
+                printf("'%s' is an Identifier\n", subStr); 
+
+ 	else if (isIdentifier(subStr) == false 
+
+                     && isDelimiter(str[r - 1]) == false) 
+
+                printf("'%s' is not an Identifier\n", subStr); 
+
+l = r; 
+
+        } 
+
+    } 
+
+    return; 
+
+} 
+
+ int main() 
+
+{ 
+
+    char str[100] = "void main() { int c = 20 ; }"; 
+
+    getToken(str);  
+
+   return (0); 
+
+} 
+
+ 
+
+OUTPUT: 
+
+'void' is a Keyword 
+
+'main' is a Keyword 
+
+'(' is a Symbol 
+
+')' is a Symbol 
+
+'{' is a Symbol 
+
+'int' is a Keyword 
+
+'c' is an Identifier 
+
+'=' is an Operator 
+
+'20' is a Constant 
+
+';' is a Symbol 
+
+'}' is a Symbol 
+
+RESULT: 
+
+Lexical Analyzer has been implemented and the program ran successfully giving the desired output. 
+
+
+
+
+
+
+
+
+
+RE to NFA PROGRAM CODE: 
+
+#include <stdio.h> 
+
+#include <malloc.h> 
+
+struct node{ 
+
+    char state; 
+
+    char transition; 
+
+    struct node *nextNode; 
+
+}*p01,*p07,*p12,*p14,*p23,*p36,*p45,*p56,*p61,*p67,*p78,*p89,*p910,*p110; 
+
+struct node *createNode(struct node * p){ 
+
+    p = malloc(sizeof(struct node *)); 
+
+    p->nextNode = NULL; 
+
+    return p; 
+
+} 
+
+void convert(char re[]){ 
+
+    // Creating all the states possible for re: (a|b)*abb 
+
+    p01=createNode(p01); 
+
+    p07=createNode(p07); 
+
+    p12=createNode(p12); 
+
+    p14=createNode(p14); 
+
+    p23=createNode(p23); 
+
+    p36=createNode(p36); 
+
+    p45=createNode(p45); 
+
+    p56=createNode(p56); 
+
+    p61=createNode(p61); 
+
+    p67=createNode(p67); 
+
+    p78=createNode(p78); 
+
+    p89=createNode(p89); 
+
+    p910=createNode(p910); 
+
+    p110=createNode(p110); 
+
+    // Initializing the values for the states 
+
+    p01->state = '0'; 
+
+    p01->transition = 'E'; 
+
+    p01->nextNode = p12; 
+
+     
+
+    p07->state = '0'; 
+
+    p07->transition = 'E'; 
+
+    p07->nextNode = p78; 
+
+     
+
+    p12->state = '1'; 
+
+    p12->transition = 'E'; 
+
+    p12->nextNode = p23; 
+
+     
+
+    p14->state = '1'; 
+
+    p14->transition = 'E'; 
+
+    p14->nextNode = p45; 
+
+     
+
+    p23->state = '2'; 
+
+    p23->transition = 'a'; 
+
+    p23->nextNode = p36; 
+
+     
+
+    p36->state = '3'; 
+
+    p36->transition = 'E'; 
+
+    p36->nextNode = p67; 
+
+     
+
+    p45->state = '4'; 
+
+    p45->transition = 'b'; 
+
+    p45->nextNode = p56; 
+
+     
+
+    p56->state = '5'; 
+
+    p56->transition = 'E'; 
+
+    p56->nextNode = p61; 
+
+     
+
+    p61->state = '6'; 
+
+    p61->transition = 'E'; 
+
+    p61->nextNode = p12; 
+
+     
+
+    p67->state = '6'; 
+
+    p67->transition = 'E'; 
+
+    p67->nextNode = p78; 
+
+     
+
+    p78->state = '7'; 
+
+    p78->transition = 'a'; 
+
+    p78->nextNode = p89; 
+
+     
+
+    p89->state = '8'; 
+
+    p89->transition = 'b'; 
+
+    p89->nextNode = p910; 
+
+     
+
+    p910->state = '9'; 
+
+    p910->transition = 'b'; 
+
+    p910->nextNode = p110; 
+
+     
+
+    p110->state = '1'; 
+
+    p110->transition = 'E'; 
+
+    p110->nextNode = NULL; 
+
+   } 
+
+void display(char re[]){ 
+
+    printf("\nThe required NFA is:\n"); 
+
+    struct node *p = p01; 
+
+    while(p!=p110){ 
+
+        printf("%c(%c) -> %c\n",p->state, p->transition,p->nextNode->state); 
+
+        p=p->nextNode; 
+
+    } 
+
+    printf("10\n"); 
+
+    p=p14; 
+
+    while(p!=p61){ 
+
+        printf("%c(%c) -> %c\n",p->state, p->transition,p->nextNode->state); 
+
+        p=p->nextNode; 
+
+    } 
+
+    printf("6(E) -> 1\n0(E) -> 7"); 
+
+} 
+
+int main() 
+
+{ 
+
+    char re[50] = "(a|b)*abb"; 
+
+    convert(re); 
+
+    display(re); 
+
+    return 0; 
+
+} 
+
+ 
+
+OUTPUT: 
+The required NFA is: 
+
+0(E) -> 1 
+
+1(E) -> 2 
+
+2(a) -> 3 
+
+3(E) -> 6 
+
+6(E) -> 7 
+
+7(a) -> 8 
+
+8(b) -> 9 
+
+9(b) -> 1 
+
+10 
+
+1(E) -> 4 
+
+4(b) -> 5 
+
+5(E) -> 6 
+
+6(E) -> 1 
+
+0(E) -> 7 
+
+RESULT: 
+
+C Code for the conversion of Regular Expression to NFA was implemented. 
+
+
+
+
+
+
+
+
+
+
+NFA to DFA ALGORITHM: 
+
+Step1: Start the program. 
+
+Step2: Declare all the variables and file pointers. 
+
+Step3: Get the input from the user. 
+
+Step4: Set the only state in SDFA to “unmarked”. 
+
+Step5: SDFA contains an unmarked state do:  
+
+a. Let T be that unmarked state  
+
+b. for each a in % do S = e-Closure(MoveNFA(T,a))  
+
+c. if S is not in SDFA already then, add S to SDFA (as an “unmarked” state)  
+
+d. Set MoveDFA(T,a) to S 
+
+Step6: For each S in SDFA if any s & S is a final state in the NFA then, mark S an a final state in the DFA 
+
+Step7: Display the Output of the Program. 
+
+Step8: Stop the Program. 
+
+ 
+
+PROGRAM CODE: 
+
+import pandas as pd 
+
+nfa1 = {'A': {'0': ['A'], '1': ['A', 'B']}, 'B': {'0': ['C'], '1': ['C']}, 'C': {'0': [], '1': []}} 
+
+nfa = {} 
+
+n = 3 ; t = 2 
+
+print('Enter the transition table of NFA:\n') 
+
+for i in range(n): 
+
+    state = input() 
+
+    nfa[state] = {} 
+
+    for j in range(t): 
+
+        path = input() 
+
+        reaching_state = [x for x in input().split()] 
+
+        nfa[state][path] = reaching_state 
+
+ 
+print("\nNFA :- \n") 
+
+print(nfa1) 
+
+print("\nPrinting NFA table :- ") 
+
+nfa_table = pd.DataFrame(nfa1) 
+
+print(nfa_table.transpose()) 
+
+nfa_final_state = ['C'] 
+
+new_states_list = [] 
+
+dfa = {} 
+
+keys_list = list( 
+
+    list(nfa.keys())[0]) 
+
+path_list = list(nfa[keys_list[0]].keys()) 
+
+dfa[keys_list[0]] = {} 
+
+for y in range(t): 
+
+    var = "".join(nfa[keys_list[0]][ 
+
+                      path_list[y]]) 
+
+    dfa[keys_list[0]][path_list[y]] = var 
+
+    if var not in keys_list: 
+
+        new_states_list.append(var) 
+
+        keys_list.append(var) 
+
+while len(new_states_list) != 0: 
+
+    dfa[new_states_list[0]] = {} 
+
+    for _ in range(len(new_states_list[0])): 
+
+        for i in range(len(path_list)): 
+
+            temp = [] 
+
+            for j in range(len(new_states_list[0])): 
+
+                temp += nfa[new_states_list[0][j]][path_list[i]] 
+
+            s = "" 
+
+            s = s.join(temp) 
+
+            if s not in keys_list: 
+
+                new_states_list.append(s) 
+
+                keys_list.append(s) 
+
+            dfa[new_states_list[0]][path_list[i]] = s 
+
+    new_states_list.remove(new_states_list[0]) 
+
+print("Final State: C\n") 
+
+print("\nDFA :- \n") 
+
+print(dfa) 
+
+print("\nPrinting DFA table :- ") 
+
+dfa_table = pd.DataFrame(dfa) 
+
+print(dfa_table.transpose()) 
+
+dfa_states_list = list(dfa.keys()) 
+
+dfa_final_states = [] 
+
+for x in dfa_states_list: 
+
+    for i in x: 
+
+        if i in nfa_final_state: 
+
+            dfa_final_states.append(x) 
+
+            break 
+
+ 
+ 
+
+INPUT: 
+
+A 
+
+0 
+
+A 
+
+1 
+
+A B 
+
+B 
+
+0 
+
+C 
+
+1 
+
+C 
+
+C 
+
+0 
+
+  
+
+1 
+
+ 
+
+ 
+
+OUTPUT: 
+
+Printing NFA table :- 
+
+     0       1 
+
+A  [A]  [A, B] 
+
+B  [C]     [C] 
+
+C   []      [] 
+
+ Printing DFA table :- 
+
+      0    1 
+
+A     A   AB 
+
+AB   AC  ABC 
+
+AC    A   AB 
+
+ABC  AC  ABC 
+
+ 
+
+RESULT: 
+
+The C program to implement the Conversion of NFA to DFA was implemented and successfully executed. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LEFT RECUR ALGORITHM: 
+
+Step 1. Start the program.  
+
+Step 2. Initialize the arrays for taking input from the user.  
+
+Step 3. Prompt the user to input the no. of non-terminals having left recursion and no. of productions for these non-terminals.  
+
+Step 4. Prompt the user to input the production for non-terminals.  
+
+Step 5. Eliminate left recursion using the following rules:-  
+
+A->Aα1| Aα2 | . . . . . |Aαm  
+
+A->β1| β2| . . . . .| βn  
+
+Then replace it by: 
+
+A-> βi A’ i=1,2,3,…..m  
+
+A’-> αj A’ j=1,2,3,…..n  
+
+A’-> Ɛ 6. 
+
+After eliminating the left recursion by applying these rules, display the productions without left recursion.  
+
+Step 7. Stop the Program 
+
+ 
+
+RESULT: 
+
+The C++ program to implement the elimination of left recursion for the give grammar (B -> Bc | b) was implemented and successfully executed. 
+
+
+
+
+
+
+
+
+
+
+
+LEFT FACTOR ALGORITHM: 
+
+Step 1. Start the program. 
+
+Step 2. Ask the user to enter the set of productions  
+
+Step 3. Check for common symbols in the given set of productions by comparing with:  A->aB1|aB2  
+
+Step 4. If found, replace the particular productions with:  
+
+A->aA’  
+
+A’->B1 | B2|ɛ  
+
+Step 5. Display the output  
+
+Step 6. Stop the Program 
+
+ 
+
+RESULT: 
+
+The C++ program to implement the elimination of left factoring for the given grammar (A -> aAB | aBc | aAc) was implemented and successfully executed. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FIRST FOLLOW ALGORITHM: 
+
+Step 1. Start the program. 
+
+Step 2. Ask the user to enter the set of productions  
+
+Step 3. Rules: 
+
+For computing the first:  
+
+1. If a is a terminal,  
+
+then FIRST(A) = {a}  
+
+Example: F -> I | id We can write it as FIRST(F) -> { ( , id )  
+
+2. If X is a non-terminal like E -> T  
+
+then to get FIRST substitute T with other productions until you get a terminal as the first symbol. 
+
+3. If X -> ε  
+
+then add ε to FIRST(X).  
+
+ 
+
+For computing the follow:  
+
+1. Always check the right side of the productions for a non-terminal, whose FOLLOW set is being found. 
+
+2. (a) If that non-terminal (S, A,B…) is followed by any terminal (a,b…,*,+,(,)…) , then add that terminal into the FOLLOW set.  
+
+(b) If that non-terminal is followed by any other non-terminal, then add FIRST of other nonterminal into the FOLLOW set. 
+
+Step 4. After following the above rules, compute the result. 
+
+Step 5. Display the output  
+
+Step 6. Stop the Program 
+
+ 
+
+RESULT: 
+
+The C++ program to compute the FIRST and FOLLOW function for the given grammar was implemented and successfully executed. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PREDICTIVE PARSING ALGORITHM: 
+
+Step 1. Start the program. 
+
+Step 2. Ask the user to enter the set of productions  
+
+Step 3. Rules: (As we already have the values of first and follow for our grammar so follow the rules for constructing the predictive parsing table):  
+
+For each production A->a of grammar, do steps (b) and ©. 
+
+For each terminal a in FIRST(a), add A->a to M[A,a]. 
+
+If e is in FIRST(a), add A->e to M[A,b] for each terminal b in FOLLOW(A). If e is in FIRST(a) and $ is in FOLLOW(A) add A->a to M[A,$]. 
+
+Make each of the undefined entry of M error. 
+
+Step 4. After following the above rules, compute the result. 
+
+Step 5. Display the output  
+
+Step 6. Stop the Program 
+
+RESULT: 
+
+The C++ program to construct the predictive parsing table for the given grammar was implemented and successfully executed. 
+
+
+
+
+
+
+
+
+
+
+
+SHIFT REDUCEALGORITHM: 
+
+Step 1. Start the program. 
+
+Step 2. Ask the user to input the grammar and the input string. 
+
+Step 3. Display the grammar and the input string that the user inputted. 
+
+Step 4. Rules: Implement the Shift Reduce Parsing using the 4 operations: 
+
+SHIFT: Next input symbol will be shifted to the top of the stack. 
+
+REDUCE: Parser detects the left end of the handle on the top of the stack and determines which non-terminal can replace it. 
+
+ACCEPT: Parser announces successful completion. 
+
+ERROR: Parser announces some error occurred. 
+
+Step 5. After following the above rules, compute the result. 
+
+Step 6. Display the output(stack) and thus the result, Accepted or Not.  
+
+Step 7. Stop the Program 
+
+ 
+
+RESULT: 
+
+The C++ program to implement shift reduce parsing for the given grammar and input string was implemented and successfully executed. 
+
+
+
+
+
+
+
+
+
+
+
+
+LEAD TRAIL ALGORITHM: 
+
+Step 1. Start the program. 
+
+Step 2. Ask the user to input the grammar. 
+
+Step 3. Display the grammar that the user inputted. 
+
+Step 4. Rules:  
+
+Leading and Trailing are functions specific to generating an operator-precedence parser, which is only applicable if you have an operator precedence grammar. An operator precedence grammar is a special case of an operator grammar, and an operator grammar has the important property that no production has two consecutive non-terminals. 
+
+(An operator precedence grammar is, loosely speaking, an operator grammar which can be parsed with an operator precedence parser) 
+
+Given an operator grammar, the function Leading (resp. Trailing) of a non-terminal produces the set of terminals which could be (recursively) the first (resp. last) terminal in a production for that non-terminal. 
+
+Another way to think of that a terminal is in the Leading set for a non-terminal if it is "visible" from the beginning of a production. We consider non-terminals to be "transparent", so a terminals could be visible through a non-terminal or by looking into a visible non-terminal. 
+
+Step 5. After following the above rules, compute the result. 
+
+Step 6. Display the result LEADING AND TRAILING.  
+
+Step 7. Stop the Program 
+
+RESULT: 
+
+The python program to compute LEADING and TRAILING for the given grammar was implemented and successfully executed. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LR (0) ALGORITHM: 
+
+Step 1. Start the program. 
+
+Step 2. Ask the user to input the grammar. 
+
+Step 3. Display the grammar that the user inputted. 
+
+Step 4. Rules:  
+
+The LR Parser is a Shift-reduce Parser that makes use of a Deterministic Finite Automata, recognizing the Set Of All Viable Prefixes by reading the stack from Bottom To Top.  
+
+If a Finite-State Machine that recognizes viable prefixes of the right sentential forms is constructed, it can be used to guide the handle selection in the Shift-reduce Parser.  
+
+Handle: Handle is a substring that matches the body of a production  
+
+Handle is a Right Sentential Form + position where reduction can be performed + production used for reduction. 
+
+LR(0) Items:   
+
+-An LR(0) Item of a Grammar G is a Production of G with a Dot (.) at some position of the right side. Production A → XYZ yields the Four items:  
+
+1. A→•XYZ We hope to see a string derivable from XYZ next on the input. 
+
+ 2. A→X•YZ We have just seen on the input a string derivable from X and that we hope next to see a string derivable from YZ next on the input.  
+
+ 3. A→XY•Z 
+
+ 4. A→XYZ•  
+
+❖ The production A→ generates only one item, A→•. 
+
+ ❖ Each of this item is a Viable prefixes 
+
+ ❖ Closure Item : An Item created by the closure operation on a state.  
+
+❖ Complete Item : An Item where the Item Dot is at the end of the RHS. 
+
+Step 5. After following the above rules, compute the result. 
+
+Step 6. Display the result that is LR(0) items for the given grammar.  
+
+Step 7. Stop the Program 
+
+RESULT: 
+
+The python program to compute the LR(0) items for the given grammar was implemented and successfully executed. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+POSTFIX ALGORITHM: 
+
+In the analysis-synthesis model of a compiler, the front end of a compiler translates a source program into an independent intermediate code, then the back end of the compiler uses this intermediate code to generate the target code (which can be understood by the machine). 
+
+The benefits of using machine independent intermediate code are: 
+
+Because of the machine independent intermediate code, portability will be enhanced. For ex, suppose, if a compiler translates the source language to its target machine language without having the option for generating intermediate code, then for each new machine, a full native compiler is required. Because, obviously, there were some modifications in the compiler itself according to the machine specifications. 
+
+Retargeting is facilitated 
+
+It is easier to apply source code modification to improve the performance of source code by optimizing the intermediate code. 
+
+ Notation: 
+
+The ordinary (infix) way of writing the sum of a and b is with operator in the middle : a + b 
+
+The postfix notation for the same expression places the operator at the right end as ab +. In general, if e1 and e2 are any postfix expressions, and + is any binary operator, the result of applying + to the values denoted by e1 and e2 is postfix notation by e1e2 +. No parentheses are needed in postfix notation because the position and arity (number of arguments) of the operators permit only one way to decode a postfix expression. In postfix notation the operator follows the operand. If we generate machine code directly from source code then for n target machine we will have n optimizers and n code generators but if we will have a machine independent intermediate code, We will have only one optimizer. Intermediate code can be either language specific (e.g., Bytecode for Java) or language. Independent (three-address code). 
+
+Example – The postfix representation of the expression (a – b) * (c + d) + (a – b) is :   ab – cd + *ab -+. 
+
+3 Address Code: 
+
+A statement involving no more than three references(two for operands and one for result) is known as three address statement. A sequence of three address statements is known as three address code. Three address statement is of the form x = y op z , here x, y, z will have address (memory location). Sometimes a statement might contain less than three references but it is still called three address statement. 
+
+Example – The three address code for the expression a + b * c + d : 
+
+T 1 = b * c 
+
+T 2 = a + T 1 
+
+T 3 = T 2 + d 
+
+T 1 , T 2 , T 3 are temporary variables. 
+
+ Tree: 
+
+Syntax tree is nothing more than condensed form of a parse tree. The operator and keyword nodes of the parse tree are moved to their parents and a chain of single productions is replaced by single link in syntax tree the internal nodes are operators and child nodes are operands. To form syntax tree put parentheses in the expression, this way it’s easy to recognize which operand should come first. 
+
+Example – 
+
+X = (a + b * c) / (a – b * c) 
+
+RESULT: 
+
+The python program to compute the Intermediate Code Generation using Postfix Notation was implemented and successfully executed. 
+
+
+
+
+
+
+
+
+
+
+
+ALGORITHM: 
+
+3 Address Code: 
+
+A statement involving no more than three references (two for operands and one for result) is known as three address statement. A sequence of three address statements is known as three address code. Three address statement is of the form x = y op z, here x, y, z will have address (memory location). Sometimes a statement might contain less than three references but it is still called three address statement. 
+
+Example – The three address code for the expression a + b * c + d : 
+
+T1 = b * c 
+
+T2 = a + T1 
+
+T3 = T2 + d 
+
+T1, T2, T3 are temporary variables. 
+
+In quadruples representation, each instruction is splitted into the following 4 different fields- 
+
+op, arg1, arg2, result 
+
+Here- 
+
+The op field is used for storing the internal code of the operator. 
+
+The arg1 and arg2 fields are used for storing the two operands used. 
+
+The result field is used for storing the result of the expression. 
+
+There are following exceptions- 
+
+ Exception-01: 
+
+To represent the statement x = op y, we place- 
+
+op in the operator field 
+
+y in the arg1 field 
+
+x in the result field 
+
+arg2 field remains unused 
+
+  
+
+Exception-02: 
+
+To represent the statement like param t1, we place- 
+
+param in the operator field 
+
+t1 in the arg1 field 
+
+Neither arg2 field nor result field is used 
+
+  
+
+Exception-03: 
+
+To represent the unconditional and conditional jump statements, we place label of the target in the result field. 
+
+RESULT: 
+
+The python program to compute the Intermediate Code Generation using Three Address Code was implemented and successfully executed. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+DAG ALGORITHM:  
+
+The leaves of a graph are labeled by a unique identifier and that identifier can be variable names or constants. 
+
+Interior nodes of the graph are labeled by an operator symbol. 
+
+Nodes are also given a sequence of identifiers for labels to store the computed value. 
+
+If y operand is undefined then create node(y). 
+
+If z operand is undefined then for case(i) create node(z). 
+
+For case(i), create node(OP) whose right child is node(z) and left child is node(y). 
+
+For case(ii), check whether there is node(OP) with one child node(y). 
+
+For case(iii), node n will be node(y). 
+
+For node(x) delete x from the list of identifiers. Append x to attached identifiers list for 
+
+The node n found in step 2. Finally set node(x) to n. 
+
+RESULT: 
+
+The python program to Implement DAG was implemented and successfully executed.  
